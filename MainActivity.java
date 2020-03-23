@@ -1,83 +1,112 @@
-package com.example.program4;
+package com.example.program8;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
-
-import android.graphics.Bitmap;
-
-import android.graphics.Canvas;
-
-import android.graphics.Color;
-
-import android.graphics.Paint;
-
-import android.graphics.drawable.BitmapDrawable;
-
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.InputStreamReader;
 
-import android.widget.ImageView;
-
-public class MainActivity extends Activity
-
-{
-
+public class MainActivity extends AppCompatActivity {
+    EditText e1;
+    Button write,read,clear;
     @Override
-
-    public void onCreate(Bundle savedInstanceState)
-
-    {
-
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
+        e1= (EditText) findViewById(R.id.editText);
+        write= (Button) findViewById(R.id.button);
+        read= (Button) findViewById(R.id.button2);
+        clear= (Button) findViewById(R.id.button3);
+        write.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String message=e1.getText().toString();
 
-//Creating a Bitmap
+                try
 
-        Bitmap bg = Bitmap.createBitmap(720, 1280, Bitmap.Config.ARGB_8888);
-
-//Setting the Bitmap as background for the ImageView
-
-        ImageView i = (ImageView) findViewById(R.id.imageView);
-
-        i.setBackgroundDrawable(new BitmapDrawable(bg));
-
-//Creating the Canvas Object
-
-        Canvas canvas = new Canvas(bg);
-
-//Creating the Paint Object and set its color & TextSize
-
-        Paint paint = new Paint();
+                {
+                    File path = getExternalFilesDir(null);
+                    File f = new File(path, "my-file-name.txt");
 
 
+                    f.createNewFile();
 
-        paint.setTextSize(50);
+                    FileOutputStream fout = new FileOutputStream(f);
 
-//To draw a Rectangle
-        paint.setColor(Color.RED);
-        canvas.drawText("Rectangle", 420, 150, paint);
+                    fout.write(message.getBytes());
 
-        canvas.drawRect(400, 200, 650, 700, paint);
+                    fout.close();
 
-//To draw a Circle
-        paint.setColor(Color.YELLOW);
-        canvas.drawText("Circle", 120, 150, paint);
+                    Toast.makeText(getBaseContext(),"Data Written in SDCARD",Toast.LENGTH_LONG).show();
 
-        canvas.drawCircle(200, 350, 150, paint);
+                }
 
-//To draw a Square
-        paint.setColor(Color.GREEN);
-        canvas.drawText("Square", 120, 800, paint);
+                catch(Exception e)
 
-        canvas.drawRect(50, 850, 350, 1150, paint);
+                {
 
-//To draw a Line
-        paint.setColor(Color.BLUE);
-        canvas.drawText("Line", 480, 800, paint);
+                    Toast.makeText(getBaseContext(),e.getMessage(),Toast.LENGTH_LONG).show();
 
-        canvas.drawLine(520, 850, 520, 1150, paint);
+                }
+            }
+        });
+        read.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String message;
 
+                String buf = "";
+
+                try
+
+                {
+                    File path = getExternalFilesDir(null);
+                    File f = new File(path, "my-file-name.txt");
+
+
+                    FileInputStream fin = new FileInputStream(f);
+
+                    BufferedReader br = new BufferedReader(new InputStreamReader(fin));
+
+                    while((message = br.readLine()) != null)
+
+                    {
+
+                        buf += message;
+
+                    }
+
+                    e1.setText(buf);
+
+                    br.close();
+
+                    fin.close();
+
+                    Toast.makeText(getBaseContext(),"Data Recived from SDCARD",Toast.LENGTH_LONG).show();
+
+                }
+
+                catch(Exception e)
+
+                {
+
+                    Toast.makeText(getBaseContext(), e.getMessage(), Toast.LENGTH_LONG).show();
+
+                }
+            }
+        });
+        clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                e1.setText("");
+            }
+        });
     }
-
 }
