@@ -1,6 +1,6 @@
-package com.example.lab10_083;
+package com.example.lab10;
 
-import com.example.lab10_083.R;
+import com.example.lab10.R;
 import android.os.Bundle;
 import android.preference.PreferenceActivity;
 
